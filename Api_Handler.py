@@ -1,4 +1,5 @@
 import requests
+import json
 
 class Api_Handler:
     KEY = ""
@@ -28,7 +29,7 @@ class Api_Handler:
     '''
     def _call_api(self, offset=0):
         r = requests.get('https://api.co-opfs.org/locator/proximitysearch', params={'zip':'98122', 'offset': str(offset)}, headers={'Accept':'application/json', 'Version':'1', 'Authorization': Api_Handler.KEY})
-        print(r)
-        result_info, locations = r['response']['resultInfo'], r['reponse']['locations']
+        r_json = json.loads(r.text)
+        result_info, locations = r_json['response']['resultInfo'], r_json['response']['locations']
         return result_info, locations
         

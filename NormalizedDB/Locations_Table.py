@@ -39,12 +39,12 @@ class Locations_Table:
 		return Locations_Table.CREATE_LOCATIONS_TABLE
 
 	def get_insert_row(self, location):
-		locationID = str(uuid.uuid4())
-		statement = "INSERT INTO Locations VALUES ({}, ".format(locationID)
+		locationId = str(uuid.uuid4()) # BECU LocationId
+		statement = "INSERT INTO Locations VALUES ({}, ".format(locationId)
 		for api_field in Locations_Table.api_fields_corresponding_to_column_order:
 			if api_field == 'NULL' or location[api_field] == '': statement += ', NULL'
 			else:
 				statement += ", {}".format(location[api_field])
 		statement += ");"
-		return statement
+		return statement, locationId
 
