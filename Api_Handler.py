@@ -18,7 +18,7 @@ class Api_Handler:
             offset = Api_Handler.MAX_NUMBER_RECORDS_RETURNED
             while offset < records_available:
                 _, temp_locations = self._call_api(offset)
-                locations.append(temp_locations)
+                locations += temp_locations
                 offset += Api_Handler.MAX_NUMBER_RECORDS_RETURNED
         return locations
 

@@ -65,11 +65,12 @@ class HoursPerDayOfTheWeek_Table:
 
 	def get_insert_row(self, location, locationId):
 		all_null = True # if true after looping, return an empty string
-		statement = "INSERT INTO HoursPerDayOfTheWeek VALUES ({}, ".format(locationId)
+		statement = "INSERT INTO HoursPerDayOfTheWeek VALUES ('{}'".format(locationId)
 		for api_field in HoursPerDayOfTheWeek_Table.api_fields_corresponding_to_column_order:
-			if api_field == 'NULL' or location[api_field] == '': statement += ', NULL'
+			if api_field == 'NULL' or location[api_field] == '': 
+				statement += ", NULL"
 			else:
-				statement += ", {}".format(location[api_field])
+				statement += ", '{}'".format(location[api_field])
 				if all_null: all_null = False
 		statement += ");"
 

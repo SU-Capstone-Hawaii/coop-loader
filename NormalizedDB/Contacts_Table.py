@@ -16,10 +16,11 @@ class Contacts_Table:
 	Arg:locationId is the BECU locationId  GUID
 	'''
 	def get_insert_row(self, location, locationId):
-		statement = "INSERT INTO Contacts VALUES ({}, ".format(locationId)
+		statement = "INSERT INTO Contacts VALUES ('{}'".format(locationId)
 		for api_field in Contacts_Table.api_fields_corresponding_to_column_order:
-			if api_field == 'NULL' or location[api_field] == '': statement += ', NULL'
+			if api_field == 'NULL' or location[api_field] == '': 
+				statement += ", NULL"
 			else:
-				statement += ", {}".format(location[api_field])
+				statement += ", '{}'".format(location[api_field])
 		statement += ");"
 		return statement

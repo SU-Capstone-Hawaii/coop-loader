@@ -18,6 +18,9 @@ class Locations_Table:
 		Hours varchar(64) NULL, 
 		RetailOutlet varchar(64) NULL, 
 		LocationType varchar(64) NULL);"""
+		
+	# combination of terminalId and institutionRtn creates the CoopLocationId field
+	# example: 'terminalId-institutionRtn'
 	api_fields_corresponding_to_column_order = ['terminalId', 
 		'NULL', 
 		'NULL', 
@@ -39,12 +42,23 @@ class Locations_Table:
 		return Locations_Table.CREATE_LOCATIONS_TABLE
 
 	def get_insert_row(self, location):
-		locationId = str(uuid.uuid4()) # BECU LocationId
-		statement = "INSERT INTO Locations VALUES ({}, ".format(locationId)
-		for api_field in Locations_Table.api_fields_corresponding_to_column_order:
-			if api_field == 'NULL' or location[api_field] == '': statement += ', NULL'
-			else:
-				statement += ", {}".format(location[api_field])
-		statement += ");"
-		return statement, locationId
+		try:
+			locationId = str(uuid.uuid4()) # BECU LocationId
+			statement = "INSERT INTO Locations VALUES ('{}' ".format(locationId)
+			for api_field in Locations_Table.api_fields_corresponding_to_column_order:
+				if api_field == 'NULL' or location[api_field] == '': 
+					statement += ", NULL"
+				else: # if data present for column
+					if api_field ==  'latitude' or api_field == 'longitude': # these are decimal values
+						statement += ", {}".format(location[api_field])
+						continue
+					elif api_field == 'terminalId':
+						statement += ", '{}-{}'".format(location[api_field], location['institutionRtn'])
+					else:
+						statement += ", '{}'".format(location[api_field])
+			statement += ");"
+			return statement, locationId
+		except Exception as e:
+			print("error: {}\nApi Field: {}\nStatement thus far: {}".format(e, api_field, statement))
+		
 

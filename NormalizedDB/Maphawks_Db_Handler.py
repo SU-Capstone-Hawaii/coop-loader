@@ -24,9 +24,10 @@ class Maphawks_Db_Handler:
         self.execute_sql_command(Sql_Commands.CREATE, Sql_Tables.HoursPerDayOfTheWeek)
     
     def insert_into_db(self, locations):
+        print("length of locations: ", len(locations))
+        time.sleep(3)
         for location in locations:
-            for table in Sql_Tables:
-                self.execute_sql_command(Sql_Commands.INSERT, table, location)
+            self.execute_sql_command(Sql_Commands.INSERT, None, location)
     
     '''
     Determines type of sql command and calls corresponding method.
@@ -48,8 +49,7 @@ class Maphawks_Db_Handler:
             else: 
                 print("TABLE {} DOES NOT EXIST".format(str(table)))
                 return
-            commit_status = self.commit_command([cmd])
-    
+            commit_status = self.commit_command([cmd])    
     '''
     Inserts a row for arg:location into all Sql_Tables
     '''
@@ -63,21 +63,27 @@ class Maphawks_Db_Handler:
             commit_status = self.commit_command([cmd_locations, cmd_contacts, cmd_special_qualities, cmd_hours])
 
     def commit_command(self, cmds):
-        for cmd in cmds:
-            print(cmd)
-            time.sleep(1)
-        return True
-        '''
         with pyodbc.connect(self.connection_str) as conn:
             cursor = conn.cursor()
             try:
                 for cmd in cmds:
+                    if cmd == '': continue #if no data to insert into db, skip to next loop iteration
                     cursor.execute(cmd)
                     cursor.commit()
                 return True
             # NB : you won't get an IntegrityError when reading
-            except (pyodbc.ProgrammingError, pyodbc.Error)  as e:
-                    if e[0] == '42S01':
-                        print("Object has already been created")
-                    return False
-        '''
+            except pyodbc.Error as e:
+                error_state = e.args[0]
+                if error_state == '42S01':
+                    print("Object has already been created")
+                    return True
+                elif error_state == '0A000':
+                    print('Database does not support this command at this time:\n{cmd}')
+                elif error_state == '40002' or error_state[:2] == '23':
+                    print('There was an integrity error on {cmd}')
+                elif error_state[:2] == '22':
+                    print('There was a data error (division by 0, etc.) in command:\n{cmd}')
+                else: 
+                    print("error: {}".format(e))
+                    print("command: {}".format(cmd))
+                    exit(1)
