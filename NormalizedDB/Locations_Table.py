@@ -22,8 +22,8 @@ class Locations_Table:
 	# combination of terminalId and institutionRtn creates the CoopLocationId field
 	# example: 'terminalId-institutionRtn'
 	api_fields_corresponding_to_column_order = ['terminalId', 
-		'NULL', 
-		'NULL', 
+		'NULL', # Corresponds to bit value TakeCoopData
+		'NULL', # Corresponds to bit value SoftDelete
 		'institutionName', 
 		'address', 
 		'city', 
