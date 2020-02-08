@@ -6,7 +6,7 @@ Below are Python Class imports. Each class corresponds to a table in the normali
 from NormalizedDB.Locations_Table import Locations_Table
 from NormalizedDB.Contacts_Table import Contacts_Table
 from NormalizedDB.SpecialQualities_Table import SpecialQualities_Table
-from NormalizedDB.HoursPerDayOfTheWeek_Table import HoursPerDayOfTheWeek_Table
+from NormalizedDB.DailyHours_Table import DailyHours_Table
 
 '''
 Enums for SQL Commands (CREATE and INSERT) and SQL Tables (same tables as above) 
@@ -30,7 +30,7 @@ class Maphawks_Db_Handler:
         self.locations_table = Locations_Table()
         self.contacts_table = Contacts_Table()
         self.special_qualities_table = SpecialQualities_Table()
-        self.hours_per_day_of_the_week_table = HoursPerDayOfTheWeek_Table()
+        self.daily_hours = DailyHours_Table()
     
     '''
     SUMMARY:
@@ -41,7 +41,7 @@ class Maphawks_Db_Handler:
         self.execute_sql_command(Sql_Commands.CREATE, Sql_Tables.Locations)
         self.execute_sql_command(Sql_Commands.CREATE, Sql_Tables.Contacts)
         self.execute_sql_command(Sql_Commands.CREATE, Sql_Tables.SpecialQualities)
-        self.execute_sql_command(Sql_Commands.CREATE, Sql_Tables.HoursPerDayOfTheWeek)
+        self.execute_sql_command(Sql_Commands.CREATE, Sql_Tables.DailyHours)
     
 
     '''
@@ -83,7 +83,7 @@ class Maphawks_Db_Handler:
             if table is Sql_Tables.Locations: cmd = self.locations_table.get_create_table()
             elif table is Sql_Tables.Contacts: cmd = self.contacts_table.get_create_table()
             elif table is Sql_Tables.SpecialQualities: cmd = self.special_qualities_table.get_create_table()
-            elif table is Sql_Tables.HoursPerDayOfTheWeek: cmd = self.hours_per_day_of_the_week_table.get_create_table()
+            elif table is Sql_Tables.DailyHours: cmd = self.daily_hours.get_create_table()
             else: 
                 print("TABLE {} DOES NOT EXIST".format(str(table)))
                 return
@@ -104,7 +104,7 @@ class Maphawks_Db_Handler:
             cmd_locations, locationId = self.locations_table.get_insert_row(location)
             cmd_contacts = self.contacts_table.get_insert_row(location, locationId)
             cmd_special_qualities = self.special_qualities_table.get_insert_row(location, locationId)
-            cmd_hours = self.hours_per_day_of_the_week_table.get_insert_row(location, locationId)
+            cmd_hours = self.daily_hours.get_insert_row(location, locationId)
             commit_status = self.commit_command([cmd_locations, cmd_contacts, cmd_special_qualities, cmd_hours])
 
 
@@ -113,6 +113,11 @@ class Maphawks_Db_Handler:
     Commits SQL statements to DB
     '''
     def commit_command(self, cmds):
+        with open('sql_cmds.txt', 'a') as myfile:
+            for cmd in cmds:
+                myfile.write(cmd)
+        return True
+        '''
         with pyodbc.connect(self.connection_str) as conn:
             cursor = conn.cursor()
             try:
@@ -137,3 +142,4 @@ class Maphawks_Db_Handler:
                     print("error: {}".format(e))
                     print("command: {}".format(cmd))
                     exit(1)
+        '''

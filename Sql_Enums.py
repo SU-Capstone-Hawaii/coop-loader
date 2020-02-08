@@ -9,4 +9,4 @@ class Sql_Tables(Enum):
     Locations = auto()
     Contacts = auto()
     SpecialQualities = auto()
-    HoursPerDayOfTheWeek = auto()
+    DailyHours= auto()

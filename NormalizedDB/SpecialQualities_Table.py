@@ -45,11 +45,15 @@ class SpecialQualities_Table:
 		return SpecialQualities_Table.CREATE_LOCATIONS_TABLE
 	
 	def get_insert_row(self, location, locationId):
+		all_null = True
 		statement = "INSERT INTO SpecialQualities VALUES ('{}'".format(locationId)
 		for api_field in SpecialQualities_Table.api_fields_corresponding_to_column_order:
 			if api_field == 'NULL' or location[api_field] == '': 
 				statement += ", NULL"
 			else:
 				statement += ", '{}'".format(location[api_field])
+				if all_null is True: all_null = False
 		statement += ");"
+
+		if all_null: statement = ""
 		return statement

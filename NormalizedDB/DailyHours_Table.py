@@ -1,5 +1,5 @@
-class HoursPerDayOfTheWeek_Table:
-	CREATE_HOURS_TABLE = """CREATE TABLE HoursPerDayOfTheWeek(
+class DailyHours_Table:
+	CREATE_HOURS_TABLE = """CREATE TABLE DailyHours(
 		LocationID varchar(64) NOT NULL PRIMARY KEY,
 		HoursMonOpen varchar(10) NULL,
 		HoursMonClose varchar(10) NULL,
@@ -61,12 +61,12 @@ class HoursPerDayOfTheWeek_Table:
 		'sundayDriveThruClose']
 
 	def get_create_table(self):
-		return HoursPerDayOfTheWeek_Table.CREATE_HOURS_TABLE
+		return DailyHours_Table.CREATE_HOURS_TABLE
 
 	def get_insert_row(self, location, locationId):
 		all_null = True # if true after looping, return an empty string
-		statement = "INSERT INTO HoursPerDayOfTheWeek VALUES ('{}'".format(locationId)
-		for api_field in HoursPerDayOfTheWeek_Table.api_fields_corresponding_to_column_order:
+		statement = "INSERT INTO DailyHours VALUES ('{}'".format(locationId)
+		for api_field in DailyHours_Table.api_fields_corresponding_to_column_order:
 			if api_field == 'NULL' or location[api_field] == '': 
 				statement += ", NULL"
 			else:
