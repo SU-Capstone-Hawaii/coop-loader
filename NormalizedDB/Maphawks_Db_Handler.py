@@ -1,18 +1,18 @@
-import pyodbc # python SQL Server database integration library
+import pypyodbc as pyodbc
+from Locations_Table import Locations_Table
+from Contacts_Table import Contacts_Table
+from SpecialQualities_Table import SpecialQualities_Table
+from DailyHours_Table import DailyHours_Table
+from Sql_Enums import Sql_Commands, Sql_Tables
+
 
 '''
 Below are Python Class imports. Each class corresponds to a table in the normalized DB schema.
 '''
-from NormalizedDB.Locations_Table import Locations_Table
-from NormalizedDB.Contacts_Table import Contacts_Table
-from NormalizedDB.SpecialQualities_Table import SpecialQualities_Table
-from NormalizedDB.DailyHours_Table import DailyHours_Table
 
 '''
 Enums for SQL Commands (CREATE and INSERT) and SQL Tables (same tables as above) 
 '''
-from Sql_Enums import Sql_Commands, Sql_Tables
-
 
 import time # used in insert_into_db() so we have some time to see printed message on console
 
@@ -113,6 +113,7 @@ class Maphawks_Db_Handler:
     Commits SQL statements to DB
     '''
     def commit_command(self, cmds):
+        '''
         with open('sql_cmds.txt', 'a') as myfile:
             for cmd in cmds:
                 myfile.write(cmd)
@@ -142,4 +143,3 @@ class Maphawks_Db_Handler:
                     print("error: {}".format(e))
                     print("command: {}".format(cmd))
                     exit(1)
-        '''

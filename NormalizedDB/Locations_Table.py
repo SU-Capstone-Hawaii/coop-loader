@@ -41,10 +41,12 @@ class Locations_Table:
 		return Locations_Table.CREATE_LOCATIONS_TABLE
 
 	def get_insert_row(self, location):
+		error = None
 		try:
 			locationId = str(uuid.uuid4()) # BECU LocationId
 			statement = "INSERT INTO Locations VALUES ('{}' ".format(locationId)
 			for api_field in Locations_Table.api_fields_corresponding_to_column_order:
+				error = api_field
 				if api_field == 'NULL':
 						statement += ', 1, 0' # Sets TakeCoopData to TRUE and SoftDelete to FALSE
 				elif location[api_field] == '': 
@@ -62,6 +64,6 @@ class Locations_Table:
 			statement += ");"
 			return statement, locationId
 		except Exception as e:
-			print("error: {}\nApi Field: {}\nStatement thus far: {}".format(e, api_field, statement))
+			print("error: {}\nApi Field: {}".format(e, error))
 		
 

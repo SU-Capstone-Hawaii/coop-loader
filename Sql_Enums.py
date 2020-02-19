@@ -1,4 +1,4 @@
-from enum import Enum, auto
+from aenum import Enum, auto
 
 class Sql_Commands(Enum):
     CREATE = auto()
